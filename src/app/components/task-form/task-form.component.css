@@ -1,0 +1,91 @@
+  
+    
+    .tarjeta{
+        background-color: rgb(250, 240, 240);
+      }
+  .btnEx{
+    float: right;
+  }
+  
+  
+  
+      .container {
+          text-align: center;
+        }
+    
+        .table-striped tbody tr:nth-of-type(odd) {
+          background-color: rgb(217, 235, 235);
+        }
+     
+        .table-hover tbody tr:hover {
+          background-color: rgba(152, 213, 236, 0.562);
+          color: rgb(112, 24, 78);
+        }
+    
+        .thead-green {
+          background-color: rgb(0, 99, 71);
+          color: white;
+        }
+   
+      .image1{
+  
+      }
+      .far{
+          cursor: pointer;
+      }
+      .gree-icon{
+          color: #198754;
+      }
+      .red-icon{
+          color: #dc3545;
+      }
+  
+  
+         
+      .container {
+        text-align: center;
+      }
+  
+      .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgb(217, 235, 235);
+      }
+  
+      .table-hover tbody tr:hover {
+        background-color: rgba(159, 243, 243, 0.7);
+        color: rgb(112, 24, 78);
+      }
+  
+      .thead-green {
+        background-color: rgb(0, 99, 71);
+        color: white;
+      }
+    
+    .abs-center {
+      display: flex;
+      justify-content: center;
+      min-height: 10vh;
+    }
+    .abs-center2 {
+      display: flex;
+     
+      justify-content: center;
+      min-height: 10vh;
+    }
+    .form {
+      width: 450px;
+    }
+
+    .eexport{
+      color: #01c167;
+    }
+    .LTab{
+      color: #c10e01;
+    }
+    :host zxing-scanner::ng-deep video {
+      max-height: 50vh;    
+      object-fit: contain;
+  }
+  :host zxing-scanner::ng-deep {
+      border-style: solid;
+      border-color: #5d75ff;
+  } 

@@ -1,0 +1,151 @@
+<div class="container">
+  <div class="abs-center">
+    <form action="#" class="border p-3 form">
+     <!--qr-->
+     <select #selectList (change)="selectCamera(selectList.value)" style="width:100px;height: 20px;" >
+      <option *ngFor="let camera of cameras" value={{camera.label}}>
+        {{camera.label}}
+      </option>
+    </select>
+    
+    <div class="abs-center2 kt-portlet__body">
+      <zxing-scanner style="width:230px; "
+      [enable]="scannerEnabled"
+      [device]="myDevice"
+      (camerasFound)="camerasFoundHandler($event)"
+      (scanSuccess)="scanSuccessHandler($event)"
+    ></zxing-scanner>
+    </div>
+   
+     <!--qr-->
+     <!--formulario-->
+
+     <span>Almacén:</span>
+     <div class="input-group input-group-sm mb-3">
+        
+       <div class="input-group input-group mb-3">
+         <div class="input-group-text">
+           <input class="form-check-input mt-0" id="check1" type="checkbox" value="" aria-label="Checkbox for following text input">
+         </div>
+         
+         <button class="btn btn-outline-secondary" type="button" id="button-addon1" (click)="vaciarArea()"><i class="fa-sharp fa-solid fa-broom"></i></button>
+         <input type="text" class="form-control" placeholder="Area"  aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"value="{{area}}" id="txtarea" maxlength="5" placeholder="Almacén" #newArea >
+      
+       </div>
+
+        </div>
+        <span style="">Lote:</span>
+       <div class="input-group input-group mb-3">
+        
+         <input type="text" class="form-control LTab"placeholder="Area"  aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"value="{{lote}}" id="txtarea" placeholder="Lote" #new disabled>
+       </div>
+
+     <div  class="col-md-6">
+         <div class="form-group">
+             <input type="hidden" class="form-control" placeholder="Lote" id="lotes" value="{{lote}}" #newLote>
+         </div>
+
+     </div>
+    
+     <div  class="col-md-6">
+         <div class="form-group">
+             <input type="hidden" class="form-control" placeholder="Ordén" value="{{orden}}" #newOrden>
+         </div>
+
+     </div>
+
+     <div  class="col-md-6">
+         <div class="form-group">
+             <input type="hidden"  class="form-control" placeholder="Producto" id="prod" value="{{producto}}" #newProducto>
+         </div>
+
+     </div>
+
+     <div  class="col-md-6">
+         <div class="form-group">
+             <input type="hidden"   class="form-control" placeholder="Código" id="code" value="{{codigo}}" #newCodigo>
+         </div>
+
+     </div>
+
+     <div  class="col-md-6">
+       
+         <div class="form-group">
+             <input type="hidden"  class="form-control"  placeholder="kilos" id="klo" value="{{kg}}" #newKg>
+         </div>
+     </div>
+
+     <div  class="col-md-6">
+         
+         <div class="form-group">
+             <input type="hidden"  class="form-control" placeholder="Metros" id="Mtro" value="{{mtr}}" #newMtr>
+         </div>
+     </div>
+     <div class="d-grid gap-2">
+      <button  style="height: 90px;" type="button" class="btn btn-success btn.lg"   (click)="addTask(newArea,newLote ,newOrden,newProducto,newCodigo,newKg ,newMtr);" id="clic" class="btn btn-primary "
+      ><i class="fa-solid fa-database"></i> Agregar</button>
+    </div>
+     <!--formulario-->
+   
+    </form>
+  </div>
+</div>
+<br>
+
+<nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg  width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34; ); background-color: rgb(43, 42, 42); color: aliceblue;"  aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item eexport"><button class="btn btn-success" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" (click)="exportToExcel()"><i class="fa-solid fa-file-export"></i> Exportar a excel</button></li>
+    <li class="breadcrumb-item LTab"><button class="btn btn-danger" (click)="limpiarTabla()" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"><i class="fa-solid fa-broom" ></i> Limpiar tabla</button></li>
+    <li class="breadcrumb-item active" aria-current="page" style="color: red;">Cantidad:{{total}}</li>
+  </ol>
+</nav>
+<br>
+
+
+<div class="container io"style="background-color: rgb(233, 233, 233);">
+  
+ <div class="table-responsive">
+  <table id="season-tble" class="table">
+      <thead>
+          <tr>
+              <th scope="col">Almacén</th>
+              <th scope="col">Lote</th>
+              <th scope="col">Ordén</th>
+              <th scope="col" class="text-center">Producto</th>
+              <th scope="col" class="text-right">Código</th>
+              
+              <th scope="col" class="text-right">Kilos</th>
+              
+              <th scope="col" class="text-right">Metros</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let task of tasks">
+          
+              <td>{{task.area}}</td>
+              <td>{{task.lote}}</td>
+              <td>{{task.orden}}</td>
+              <td>{{task.producto}}</td>
+              <td>{{task.codigo}}</td>
+              <td>{{task.kg}}</td>
+              <td>{{task.mtr}}</td>
+              
+            </tr>
+      </tbody>
+      <tfoot>
+          <tr>
+              
+              <td class="text-right" style="color: red;"><strong>total de lotes: {{total}}</strong></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <!-- <td class="text-right" style="color: red;"><strong >kilos totales: {{total2}}</strong></td>
+              <td class="text-right" style="color: red;"><strong >metros totales: {{total3}}</strong></td> -->
+          </tr>
+      </tfoot>
+  </table>
+</div>
+
+
+</div>
