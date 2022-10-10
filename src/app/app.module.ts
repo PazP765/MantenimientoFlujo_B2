@@ -9,6 +9,7 @@ import { TaskComponent } from './components/task/task.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { TaskService } from './services/task.service';
 import { FormsModule } from '@angular/forms';
+import { ModalModule } from 'ngx-bootstrap/modal';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,6 +23,7 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     ZXingScannerModule,
     FormsModule,
+    ModalModule.forRoot()
   ],
   providers: [TaskService],
   bootstrap: [AppComponent]

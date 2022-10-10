@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Task } from '../../components/models/task';
 import { TaskService } from 'src/app/services/task.service';
 import Swal from 'sweetalert2'
 import * as XLSX from 'xlsx';
 import { __values } from 'tslib'
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal'
 @Component({
   selector: 'app-task-form',
   templateUrl: './task-form.component.html',
@@ -11,8 +12,8 @@ import { __values } from 'tslib'
 })
 export class TaskFormComponent implements OnInit {
   tasks!: Task[];
-  name = 'ExcelSheet.xlsx';
   
+  bsModalRef: BsModalRef = new BsModalRef()
   public cameras:MediaDeviceInfo[]=[];
   public myDevice!: MediaDeviceInfo;
   public scannerEnabled=false;
@@ -32,10 +33,10 @@ export class TaskFormComponent implements OnInit {
   public kg1:any
   public mtr1:any
   public total:any
-  public total2!:number
-  public total3!:number
+  public kgTotales:any
+ public mtrTotales:any
   
-  constructor(public taskService:TaskService) {
+  constructor(public taskService:TaskService,private modalService: BsModalService) {
    
    }
 
@@ -43,35 +44,51 @@ export class TaskFormComponent implements OnInit {
     this.tasks=this.taskService.getTask();
     this.total=this.tasks.length
    
-  
+    const total = this.tasks.map(({kg}) => kg).reduce((acc, value) => acc + value, 0);
+    this.kgTotales=total
    
-   
+    const totalm = this.tasks.map(({mtr}) => mtr).reduce((acc, value) => acc + value, 0);
+    this.mtrTotales=totalm
   }
-// suma(){
-//   for(let task of this.tasks){
-//     this.total2=parseFloat((document.getElementById('lotes') as HTMLInputElement).value)
-//         this.total2+=task.kg
-//   }
-// }
+  openModal(template: TemplateRef<any>) {
+    this.bsModalRef = this.modalService.show(template)
+  }
+  saveSomeThing() {
+    if((document.getElementById('txtNamed') as HTMLInputElement).value===''){
+      Swal.fire({
+        position: 'top',
+        icon: 'error',
+        title: 'Error !!,Agregue un nombre de archivo',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    }else{let nameInput=(document.getElementById('txtNamed') as HTMLInputElement).value
+    let name = nameInput+'.xlsx';
+    let element = document.getElementById('season-tble');
+    const worksheet: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+
+    const book: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(book, worksheet, 'Sheet1');
+
+    XLSX.writeFile(book, name);
+
+    this.bsModalRef.hide()}
+    
+  } 
+  suma() {
+    const total = this.tasks.map(({kg}) => kg).reduce((acc, value) => acc + value, 0);
+    this.kgTotales=total
+    return this.kgTotales;
+  }
+  sumamtr() {
+    const totalm = this.tasks.map(({mtr}) => mtr).reduce((acc, value) => acc + value, 0);
+    this.mtrTotales=totalm
+    return this.mtrTotales;
+  }
    addTask(newArea:HTMLInputElement,newLote:HTMLInputElement, newOrden:HTMLInputElement,newProducto:HTMLInputElement ,newCodigo:HTMLInputElement ,newKg:HTMLInputElement ,newMtr:HTMLInputElement){  
-   let valor
-  let total
-  let pre
-  for(let task of this.tasks){
-    pre=task.kg
-    this.total2+=pre
-    
-  }
-   for (let index = 0; index < this.tasks.length; index++) {
-    console.log(this.total2)
-  
-   }
-  
    
-
-    
-
-   this.total2=parseFloat(this.total2+this.kg)
+    let valor
+  
     for(let task of this.tasks){
       if((document.getElementById('lotes') as HTMLInputElement).value===task.lote){
       valor='repetido'
@@ -84,7 +101,7 @@ export class TaskFormComponent implements OnInit {
     if((document.getElementById('txtarea') as HTMLInputElement).value.length >= 30){
       
       Swal.fire({
-        position: 'top-end',
+        position: 'top',
         icon: 'error',
         title: 'Error en almacén!!,El código no parece pertenecer a un almacén',
         showConfirmButton: false,
@@ -93,7 +110,7 @@ export class TaskFormComponent implements OnInit {
     }else{
       if(valor==='repetido'){
         Swal.fire({
-          position: 'top-end',
+          position: 'top',
           icon: 'error',
           title: 'Error en lote!!, El lote ya se encuentra en la lista',
           showConfirmButton: false,
@@ -106,6 +123,7 @@ export class TaskFormComponent implements OnInit {
       else{
         if((document.getElementById('txtarea') as HTMLInputElement).value==''){
           Swal.fire({
+            position: 'top',
             icon: 'error',
             title: 'Oops...',
             text: 'No se escaneo un Almacén!',
@@ -114,14 +132,17 @@ export class TaskFormComponent implements OnInit {
         }else{
           if((document.getElementById('code') as HTMLInputElement).value==''){
             Swal.fire({
+              position: 'top',
               icon: 'error',
               title: 'Oops...',
               text: 'Se requiere un lote!',
              
             })
           }else{
-            console.log()
+            
             this.total=this.tasks.length+1,
+            this.suma(),
+            this.sumamtr(),
             this.taskService.addTask({
              
               area:newArea.value,
@@ -133,7 +154,7 @@ export class TaskFormComponent implements OnInit {
               kg:parseFloat(newKg.value),
               mtr:parseFloat(newMtr.value),
               hide:true
-            })
+            }) , this.suma(),this.sumamtr()
             if((document.getElementById('check1') as HTMLInputElement).checked){
               this.lote=''
               this.lote.focus()
@@ -155,15 +176,7 @@ export class TaskFormComponent implements OnInit {
 
 
    }
-   exportToExcel(): void {
-    let element = document.getElementById('season-tble');
-    const worksheet: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-
-    const book: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(book, worksheet, 'Sheet1');
-
-    XLSX.writeFile(book, this.name);
-  }
+ 
 
 vaciarArea(){
   this.area='';
@@ -171,6 +184,9 @@ vaciarArea(){
 
 limpiarTabla(){
   Swal.fire({
+    position: 'top',
+
+    
     title: 'Atencion!!!, Se eliminaran todos los datos capturados',
     text: "¿Deseas continuar?",
     icon: 'warning',

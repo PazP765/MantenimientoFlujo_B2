@@ -29,12 +29,12 @@
          </div>
          
          <button class="btn btn-outline-secondary" type="button" id="button-addon1" (click)="vaciarArea()"><i class="fa-sharp fa-solid fa-broom"></i></button>
-         <input type="text" class="form-control" placeholder="Area"  aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"value="{{area}}" id="txtarea" maxlength="5" placeholder="Almacén" #newArea >
+         <input type="text" class="form-control" placeholder="Area"  aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"value="{{area}}" id="txtarea"  placeholder="Almacén" #newArea >
       
        </div>
 
         </div>
-        <span style="">Lote:</span>
+        <span >Lote:</span>
        <div class="input-group input-group mb-3">
         
          <input type="text" class="form-control LTab"placeholder="Area"  aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"value="{{lote}}" id="txtarea" placeholder="Lote" #new disabled>
@@ -82,7 +82,7 @@
          </div>
      </div>
      <div class="d-grid gap-2">
-      <button  style="height: 90px;" type="button" class="btn btn-success btn.lg"   (click)="addTask(newArea,newLote ,newOrden,newProducto,newCodigo,newKg ,newMtr);" id="clic" class="btn btn-primary "
+      <button  style="height: 90px;" type="button" class="btn btn-success btn.lg"   (click)="addTask(newArea,newLote ,newOrden,newProducto,newCodigo,newKg ,newMtr);suma()" id="clic" class="btn btn-primary "
       ><i class="fa-solid fa-database"></i> Agregar</button>
     </div>
      <!--formulario-->
@@ -94,9 +94,16 @@
 
 <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg  width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34; ); background-color: rgb(43, 42, 42); color: aliceblue;"  aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item eexport"><button class="btn btn-success" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" (click)="exportToExcel()"><i class="fa-solid fa-file-export"></i> Exportar a excel</button></li>
-    <li class="breadcrumb-item LTab"><button class="btn btn-danger" (click)="limpiarTabla()" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"><i class="fa-solid fa-broom" ></i> Limpiar tabla</button></li>
-    <li class="breadcrumb-item active" aria-current="page" style="color: red;">Cantidad:{{total}}</li>
+    <li class="breadcrumb-item eexport" style="float:left;"><button class="btn btn-success" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem;" (click)="openModal(template);"><i class="fa-solid fa-file-export"></i> Exportar a excel</button></li>
+    <li class="breadcrumb-item LTab"style="float:right;"><button class="btn btn-danger" (click)="limpiarTabla()" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem;"><i class="fa-solid fa-broom" ></i> Limpiar tabla</button></li>
+     </ol>
+</nav>
+<!--nav extra-->
+<nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg  width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34; ); background-color: rgb(43, 42, 42); color: aliceblue;"  aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page" style="color: rgb(0, 153, 255);font: size 8px;">Cantidad:{{total}}</li>
+    <li class="breadcrumb-item active" aria-current="page" style="color: rgb(0, 255, 128);font: size 8px;">Kilos totales:{{kgTotales}}</li>
+    <li class="breadcrumb-item active" aria-current="page" style="color: rgb(240, 195, 111);font: size 9px;">Metros totales:{{mtrTotales}}</li>
   </ol>
 </nav>
 <br>
@@ -140,8 +147,8 @@
               <td></td>
               <td></td>
               <td></td>
-              <!-- <td class="text-right" style="color: red;"><strong >kilos totales: {{total2}}</strong></td>
-              <td class="text-right" style="color: red;"><strong >metros totales: {{total3}}</strong></td> -->
+               <td class="text-right" style="color: red;"><strong >kilos totales: {{kgTotales}}</strong></td>
+              <td class="text-right" style="color: red;"><strong >metros totales: {{mtrTotales}}</strong></td>
           </tr>
       </tfoot>
   </table>
@@ -149,3 +156,46 @@
 
 
 </div>
+
+
+
+     
+  
+  <!--modales-->
+  <!--modal para  salida de activo-->
+  <ng-template class="wrapper bg-white" #template>
+    <div class="modal-header">
+      <div class="h6 text-muted text-center pt-2" ><i class="fa-solid fa-triangle-exclamation triangle"></i></div>
+      <button
+        type="button"
+        class="close pull-rigth"
+        aria-label="Close"
+        (click)="bsModalRef.hide()"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+   <br>
+
+  <form class="rounded mb-0 m-4 p-4 needs-validation novalidate" >
+    <h6 ><i class="fas fa-info-circle"></i> Agrega un nombre para este documento</h6>
+    <div class="input-group input-group-sm mb-3">
+      <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fa-solid fa-file-excel"></i></span>
+      <input type="text" class="form-control" placeholder="Nombre del archivo.xlsx" name="name" id="txtNamed" required >
+    </div>
+  </form>
+    
+     
+    <!--inicio-->
+   
+   <!-- <div class="h2 text-center">Creativity</div>-->
+      
+     
+            
+           <button class="btn btn-primary"  (click)="saveSomeThing() "><i class="fa-solid fa-file-arrow-down"></i> Descargar</button>
+          
+ <br>
+  
+    <!--fin-->
+  </ng-template>
+  <!--modal para  salida de activo-->
